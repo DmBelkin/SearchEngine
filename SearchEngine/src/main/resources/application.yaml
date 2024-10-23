@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+
+spring:
+  datasource:
+    password: dima##skill**Box
+    url: jdbc:mysql://localhost:3306/search_engine?serverTimezone=UTC&useSSL=false
+    username: root
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        property: spring.jpa.properties.hibernate.jdbc.batch_size=100
+                  spring.jpa.properties.hibernate.order_inserts=true
+        dialect: org.hibernate.dialect.MySQL5Dialect
+    show-sql: false
+
+
+
+
+indexing-settings:
+  sites:
+    - url: https://skillbox.ru
+      name: skillbox.ru
+    - url: https://playback.ru
+      name: playback.ru
