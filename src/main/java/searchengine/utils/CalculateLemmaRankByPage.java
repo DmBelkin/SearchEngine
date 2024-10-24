@@ -4,6 +4,7 @@ public class CalculateLemmaRankByPage {
 
 
     public float KMPCalculateRank(String pattern, String content) {
+        //алгоритм поиска подстроки Кнута-Мориса-Пратта
         float k = 1;
         int m = pattern.length();
         int n = content.length();
