@@ -134,22 +134,21 @@ public class SearchService implements Statistics {
             float relevation = m.getValue();
             SearchResult result = new SearchResult();
             result.setUri(page.getPath());
-            boolean containsAllLemmas = true;
             for (int i = 0; i < lemmaList.size(); i++) {
-                String subSnippet = lemmaSearch(lemmaList.get(i).getLemma(), c.toLowerCase(), c.toLowerCase());
-                if (!subSnippet.isBlank() && snippet.length() <= 300) {
-                    snippet += subSnippet;
+                if (snippet.isBlank()) {
+                    snippet = lemmaSearch(lemmaList.get(i).getLemma(), c.toLowerCase(), c.toLowerCase());
+                    if (snippet.isBlank()) {
+                        break;
+                    }
+                } else {
+                    snippet = lemmaSearch(lemmaList.get(i).getLemma(), c.toLowerCase(), snippet);
+                    if (snippet.isBlank()) {
+                        break;
+                    }
                 }
-                if (subSnippet.isBlank()) {
-                    containsAllLemmas = false;
-                    break;
-                }
-            }
-            if (!containsAllLemmas) {
-                continue;
             }
             if (snippet.isBlank()) {
-                snippet = title;
+                continue;
             }
             result.setSite("");
             result.setSnippet(snippet);
@@ -169,6 +168,7 @@ public class SearchService implements Statistics {
 
 
     public String lemmaSearch(String p, String s, String content) {
+        boolean containsLemma = false;
         String snippet = "";
         int m = p.length();
         int n = s.length();
@@ -183,11 +183,9 @@ public class SearchService implements Statistics {
             if (m - j == 0) {
                 int start = i - j;
                 int end = (i - j) + p.length();
-                if (end + 40 <= content.length() - 1) {
-                    snippet += "<b>" + content.substring(start, end) + "<b>" + content.substring(end, end + 40) + "\s";
-                } else {
-                    snippet += "<b>" + content.substring(start, end) + "<b>" + content.substring(end) + "\s";
-                }
+                snippet = content.substring(0, start) + "<b>" + content.substring(start, end) +
+                        "</b>" + content.substring(end);
+                containsLemma = true;
                 j = lps[j - 1];
             } else if (i < n && p.charAt(j) != s.charAt(i)) {
                 if (j != 0) {
@@ -196,6 +194,9 @@ public class SearchService implements Statistics {
                     i = i + 1;
                 }
             }
+        }
+        if (!containsLemma) {
+            return "";
         }
         return snippet;
     }
