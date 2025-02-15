@@ -172,7 +172,7 @@ public class SearchService implements Statistics {
         String snippet = "";
         int m = p.length();
         int n = s.length();
-        int[] lps = computePrefix(s);
+        int[] lps = computePrefix(p);
         int j = 0;
         int i = 0;
         while (i < n) {

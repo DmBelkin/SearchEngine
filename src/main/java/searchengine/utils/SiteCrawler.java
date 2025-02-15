@@ -46,7 +46,7 @@ public class SiteCrawler extends RecursiveAction {
             page.setContent(document.toString());
             page.setPath(url);
             String text = document.text().length() > 2000? document.text().substring(0, 2000): document.text(); ;
-            Page page1 = service.setLinkSet(page, document.title() + " " + text);
+            Page page1 = service.setLinkSet(page, document.title() + " " + text, document.text());
             if (page1 == null) {
                 throw new IllegalArgumentException();
             }

@@ -8,7 +8,7 @@ public class CalculateLemmaRankByPage {
         float k = 1;
         int m = pattern.length();
         int n = content.length();
-        int[] lps = computePrefix(content);
+        int[] lps = computePrefix(pattern);
         int j = 0;
         int i = 0;
         while (i < n) {

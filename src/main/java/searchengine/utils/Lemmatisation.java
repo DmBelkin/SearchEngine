@@ -49,9 +49,9 @@ public class Lemmatisation {
         lemmaTransaction = new LemmaTransaction(lemmaRepo, indexRepo, observable);
     }
 
-    public void startLemmatisation() {
+    public void startLemmatisation(String content) {
         long start = System.currentTimeMillis();
-        Map<String, Float> map = lemma(splitTextIntoWords(text), text);
+        Map<String, Float> map = lemma(splitTextIntoWords(text), text, content);
         long end = System.currentTimeMillis();
         System.out.println("lemmatisation time: " + (end - start));
         long start1 = System.currentTimeMillis();
@@ -71,7 +71,7 @@ public class Lemmatisation {
     }
 
     public Map<String, Float> query(String searchQuery) {
-        return lemma(splitTextIntoWords(searchQuery), searchQuery);
+        return lemma(splitTextIntoWords(searchQuery), searchQuery, searchQuery);
     }
 
     public synchronized void transaction(Map<String, Float> lemmas, Long siteId, Long pageId) {
@@ -110,7 +110,7 @@ public class Lemmatisation {
         }};
     }
 
-    public Map<String, Float> lemma(List<List<String>> text, String content) throws WrongCharaterException {
+    public Map<String, Float> lemma(List<List<String>> text, String content, String fullContent) throws WrongCharaterException {
         Map<String, Float> map = new TreeMap<>();
         for (int i = 0; i < 2; i++) {
             List<String> list = text.get(i);
@@ -134,10 +134,10 @@ public class Lemmatisation {
                     if (i == 0) {
                         List<String> wordBaseForms =
                                 luceneMorphology.getNormalForms(cleanText);
-                        map.putAll(calculateRank(wordBaseForms, content));
+                        map.putAll(calculateRank(wordBaseForms, fullContent));
                     } else {
                         List<String> eng = engluceneMorphology.getNormalForms(cleanText);
-                        map.putAll(calculateRank(eng, content));
+                        map.putAll(calculateRank(eng, fullContent));
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                     e.printStackTrace();

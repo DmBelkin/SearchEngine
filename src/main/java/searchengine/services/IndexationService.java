@@ -74,7 +74,7 @@ public class IndexationService implements Statistics {
     }
 
     @Async
-    public void update(Site site) {
+    public void update(Site site) { //пока не работает
         site.setStatusTime(LocalDateTime.now());
         site.setStatus(StatusValue.INDEXING);
         siteRepo.save(site);
@@ -125,20 +125,20 @@ public class IndexationService implements Statistics {
     }
 
     @Cacheable(value = "pageCache")
-    public synchronized Page setLinkSet(Page page, String text) {
+    public synchronized Page setLinkSet(Page page, String text, String content) {
         Page page1 = pageRepo.findBypath(page.getPath());
         if (page1 != null) {
             return null;
         }
         page = pageRepo.save(page);
-        insert(page, text);
+        insert(page, text, content);
         return page;
     }
 
 
-    public synchronized void insert(Page page, String text) {
+    public synchronized void insert(Page page, String text, String content) {
         lemmatisation.setPage(page, text);
-        lemmatisation.startLemmatisation();
+        lemmatisation.startLemmatisation(content);
     }
 
     @Async
